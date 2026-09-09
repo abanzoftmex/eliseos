@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     // Aplicar rate limiting antes de enviar
     await rateLimit();
     
-    const from = "Chago Notificaciones <noreply@email.jhernandez.mx>";
+    const from = process.env.EMAIL_FROM || "Elíseos Notificaciones <noreply@email.jhernandez.mx>";
     const result = await resend.emails.send({ from, to, subject, html });
     return res.status(200).json({ success: true, id: result?.id || null });
   } catch (error) {

@@ -8,7 +8,7 @@ import {
 
 async function sendVerificationEmail({ to, name, code }) {
   const apiKey = process.env.RESEND_API_KEY || process.env.NEXT_PUBLIC_RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM || 'Elíseos Box & Fitness <contacto@eliseos.mx>';
+  const from = process.env.EMAIL_FROM || 'Elíseos Box & Fitness <noreply@email.jhernandez.mx>';
 
   if (!apiKey) {
     throw new Error('RESEND_API_KEY no esta configurada');
