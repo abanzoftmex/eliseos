@@ -1,0 +1,10 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Permitir lectura y escritura para el funcionamiento de la aplicación y APIs
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

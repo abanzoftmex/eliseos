@@ -1,0 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Brand Tokens Oficiales — Elíseos Box & Fitness (Brandbook) */
+  --color-primary: #1c4040;
+  --color-primary-dark: #0d1f1f;
+  --color-accent: #c2ef03;
+  --color-accent-hover: #b0d802;
+  
+  --color-eliseos-dark: #1c4040;
+  --color-eliseos-lime: #c2ef03;
+  --color-eliseos-gray: #d1d1d1;
+  
+  /* Escala oficial Elíseos (#1c4040) */
+  --color-science-950: #081414;
+  --color-science-900: #0d1f1f;
+  --color-science-800: #143030;
+  --color-science-700: #1c4040;
+  --color-science-600: #265555;
+  --color-science-500: #357070;
+  --color-science-400: #559191;
+  --color-science-300: #8ebbbb;
+  --color-science-200: #c6dfdf;
+  --color-science-100: #e8f2f2;
+  --color-science-50: #f4f8f8;
+
+  /* Remapeo completo de paleta Cyan a gama Elíseos (Elimina el azul de Science) */
+  --color-cyan-950: #081414;
+  --color-cyan-900: #0d1f1f;
+  --color-cyan-800: #143030;
+  --color-cyan-700: #1c4040;
+  --color-cyan-600: #1c4040;
+  --color-cyan-500: #265555;
+  --color-cyan-400: #357070;
+  --color-cyan-300: #8ebbbb;
+  --color-cyan-200: #c6dfdf;
+  --color-cyan-100: #e8f2f2;
+  --color-cyan-50: #f4f8f8;
+
+  /* Remapeo de paleta Sky a gama Elíseos */
+  --color-sky-950: #081414;
+  --color-sky-900: #0d1f1f;
+  --color-sky-800: #143030;
+  --color-sky-700: #1c4040;
+  --color-sky-600: #1c4040;
+  --color-sky-500: #265555;
+  --color-sky-400: #357070;
+  --color-sky-300: #8ebbbb;
+  --color-sky-200: #c6dfdf;
+  --color-sky-100: #e8f2f2;
+  --color-sky-50: #f4f8f8;
+
+  /* Remapeo de paleta Teal a gama Elíseos */
+  --color-teal-950: #081414;
+  --color-teal-900: #0d1f1f;
+  --color-teal-800: #143030;
+  --color-teal-700: #1c4040;
+  --color-teal-600: #1c4040;
+  --color-teal-500: #265555;
+  --color-teal-400: #357070;
+  --color-teal-300: #8ebbbb;
+  --color-teal-200: #c6dfdf;
+  --color-teal-100: #e8f2f2;
+  --color-teal-50: #f4f8f8;
+
+  /* Remapeo de paleta Blue a gama Elíseos */
+  --color-blue-950: #081414;
+  --color-blue-900: #0d1f1f;
+  --color-blue-800: #143030;
+  --color-blue-700: #1c4040;
+  --color-blue-600: #1c4040;
+  --color-blue-500: #265555;
+  --color-blue-400: #357070;
+  --color-blue-300: #8ebbbb;
+  --color-blue-200: #c6dfdf;
+  --color-blue-100: #e8f2f2;
+  --color-blue-50: #f4f8f8;
+
+  /* Brand Tokens de interfaz y bordes sutiles (Corrige el borde negro de Tailwind v4) */
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-background: #ffffff;
+  --color-foreground: #0d1f1f;
+  --color-card: #ffffff;
+  --color-card-foreground: #0d1f1f;
+  --color-muted: #f4f8f8;
+  --color-muted-foreground: #64748b;
+}
+
+@layer base {
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    border-color: #e2e8f0;
+  }
+}
+
+:root {
+  --background: #f6f9f9;
+  --foreground: #0d1f1f;
+  --card: #ffffff;
+  --card-foreground: #0d1f1f;
+  --popover: #ffffff;
+  --popover-foreground: #0d1f1f;
+  --primary: #1c4040;
+  --primary-foreground: #ffffff;
+  --primary-highlight: #c2ef03;
+  --secondary: #edf3f3;
+  --secondary-foreground: #143030;
+  --muted: #edf3f3;
+  --muted-foreground: #427c7c;
+  --accent: #c2ef03;
+  --accent-foreground: #143030;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #d4e4e4;
+  --input: #d4e4e4;
+  --ring: #c2ef03;
+  --radius: 0.75rem;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glassmorphism utilities adaptados al Slate de Elíseos */
+.glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(28, 64, 64, 0.1);
+}
+
+.glass-dark {
+  background: rgba(20, 48, 48, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(194, 239, 3, 0.15);
+}
+
+/* Custom animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-slide-in {
+  animation: slide-in-right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Modern Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a5c7c7;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6ca1a1;
+}
+
+/* Print Styles */
+@media print {
+  .no-print, .print-hide {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    font-size: 10pt !important;
+  }
+  @page {
+    margin: 1.5cm;
+    size: letter;
+  }
+  .bg-white, .rounded-2xl, section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
