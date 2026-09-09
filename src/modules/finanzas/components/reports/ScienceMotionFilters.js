@@ -103,7 +103,7 @@ const ScienceMotionFilters = ({ onApplyFilters, onClearFilters }) => {
       setTiposPlanes(tiposPlanesData.data || tiposPlanesData.tipos || []);
     } catch (err) {
       console.error('Error cargando datos iniciales:', err);
-      error('No se puede conectar con Science Motion. Verifica que el servidor esté corriendo en localhost:3000');
+      error('No se puede conectar con el servidor. Verifica que el sistema esté disponible.');
     } finally {
       setLoadingData(false);
     }

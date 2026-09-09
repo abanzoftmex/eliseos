@@ -456,11 +456,12 @@ const Sidebar = ({
               </button>
             )}
 
-            {/* Portal ELISEOS - Enlace externo */}
+            {/* Portal ELISEOS - Enlace */}
             <a
-              href={process.env.NEXT_PUBLIC_EXTERNAL_SYSTEM_URL || "http://localhost:3000"}
+              href={process.env.NEXT_PUBLIC_PORTAL_URL || "/portal"}
               target="_blank"
               rel="noopener noreferrer"
+              title="Portal ELISEOS"
               className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             >
               <ArrowTopRightOnSquareIcon className="h-5 w-5 flex-shrink-0" />
@@ -860,9 +861,9 @@ const Sidebar = ({
               </button>
             )}
 
-            {/* Portal ELISEOS - Enlace externo (mobile) */}
+            {/* Portal ELISEOS - Enlace (mobile) */}
             <a
-              href={process.env.NEXT_PUBLIC_EXTERNAL_SYSTEM_URL || "http://localhost:3000"}
+              href={process.env.NEXT_PUBLIC_PORTAL_URL || "/portal"}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-100"

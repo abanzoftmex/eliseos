@@ -99,7 +99,7 @@ export default async function handler(req, res) {
             '1. Usa estas credenciales para iniciar sesión:',
             `   Email: ${email}`,
             `   Password: ${password}`,
-            '2. Ve a http://localhost:3000',
+            '2. Ve a la pantalla de inicio de sesión de la plataforma',
             '3. Inicia sesión con las credenciales',
             '4. IMPORTANTE: Cambia la contraseña después del primer login',
             '5. ELIMINA este archivo /api/init-admin.js por seguridad'

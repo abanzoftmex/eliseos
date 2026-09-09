@@ -3,7 +3,7 @@
  * Obtiene información de ventas, productos, planes y paquetes
  */
 
-const EXTERNAL_SYSTEM_URL = process.env.EXTERNAL_SYSTEM_URL || 'http://localhost:3000';
+const EXTERNAL_SYSTEM_URL = process.env.EXTERNAL_SYSTEM_URL || process.env.NEXT_PUBLIC_BASE_URL || '';
 const API_KEY = process.env.API_INTEGRATION_SECRET || 'eliseos-admin-api-key-2026';
 
 class ScienceMotionService {
@@ -25,7 +25,7 @@ class ScienceMotionService {
       // Verificar si la respuesta es HTML (error 404)
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('text/html')) {
-        throw new Error(`Endpoint no encontrado: ${url}. Verifica que ELISEOS esté corriendo y que el endpoint exista.`);
+        throw new Error(`Endpoint no encontrado: ${url}. Verifica que el endpoint exista.`);
       }
 
       if (!response.ok) {
@@ -36,7 +36,7 @@ class ScienceMotionService {
       return await response.json();
     } catch (error) {
       if (error.message.includes('fetch failed') || error.message.includes('ECONNREFUSED')) {
-        throw new Error(`No se puede conectar a ELISEOS (${EXTERNAL_SYSTEM_URL}). Verifica que el servidor esté corriendo.`);
+        throw new Error(`No se puede conectar al servidor (${EXTERNAL_SYSTEM_URL || 'local'}). Verifica que esté en ejecución.`);
       }
       throw error;
     }

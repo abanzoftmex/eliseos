@@ -52,9 +52,11 @@ function DirectorioPage({ initialProfesionales }) {
 export async function getServerSideProps(context) {
   try {
     // Cargar datos iniciales de profesionales en el servidor
+    const protocol = context.req?.headers['x-forwarded-proto'] || 'http';
+    const host = context.req?.headers?.host;
     const baseUrl = process.env.VERCEL_URL 
       ? `https://${process.env.VERCEL_URL}` 
-      : process.env.NEXTAUTH_URL || 'http://localhost:3000';
+      : (process.env.NEXTAUTH_URL || (host ? `${protocol}://${host}` : ''));
 
     // Fetch profesionales iniciales
     const directorioResponse = await fetch(`${baseUrl}/api/directorio?limit=50`);
