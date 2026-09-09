@@ -117,16 +117,8 @@ export default async function handler(req, res) {
 
       const precioTotal = data.precioFinal || data.precio || data.precioOriginal || 0;
       
-      // MIGRACIÓN: Si montoPagado no existe O es igual al precioTotal (lógica antigua),
-      // tratarlo como pendiente (0)
-      let montoPagado = data.montoPagado !== undefined ? data.montoPagado : 0;
-      
-      // Detectar paquetes con lógica antigua: si montoPagado = precioTotal, tratarlo como pendiente
-      if (montoPagado === precioTotal && montoPagado > 0) {
-        montoPagado = 0;
-      }
-      
-      const saldoPendiente = precioTotal - montoPagado;
+      const montoPagado = data.montoPagado !== undefined ? Number(data.montoPagado) : 0;
+      const saldoPendiente = Math.max(0, precioTotal - montoPagado);
 
       // Solo incluir si hay saldo pendiente
       if (saldoPendiente > 0) {

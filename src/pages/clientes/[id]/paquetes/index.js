@@ -164,7 +164,7 @@ function UserPackagesPage({ initialUser, initialUserType, initialUserPackages, i
     setAssigningPackage(true);
     
     // Determinar la sucursal a usar
-    const sucursalParaAsignar = selectedSucursalAsignacion || validSucursalesForAssignment[0] || userSucursales[0] || 'valquirico';
+    const sucursalParaAsignar = selectedSucursalAsignacion || validSucursalesForAssignment[0] || userSucursales[0] || '';
     
     try {
       const discountData = getSelectedDiscountData();

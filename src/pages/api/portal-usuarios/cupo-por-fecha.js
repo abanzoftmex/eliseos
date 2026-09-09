@@ -41,32 +41,8 @@ export default async function handler(req, res) {
           counts[data.idClase] = (counts[data.idClase] || 0) + 1;
         }
       }
-    } catch {
-      // Fallback: iterate users directly (slower but index-free)
-      const [clientesSnap, atletasSnap] = await Promise.all([
-        getDocs(collection(db, 'clientes')),
-        getDocs(collection(db, 'atletas')),
-      ]);
-
-      for (const userDoc of [...clientesSnap.docs, ...atletasSnap.docs]) {
-        const colName = clientesSnap.docs.some(d => d.id === userDoc.id) ? 'clientes' : 'atletas';
-        try {
-          const snap = await getDocs(
-            query(
-              collection(db, colName, userDoc.id, 'clasesAsignadas'),
-              where('fechaAsignacionString', '==', fecha)
-            )
-          );
-          for (const d of snap.docs) {
-            const data = d.data();
-            if (data.idClase) {
-              counts[data.idClase] = (counts[data.idClase] || 0) + 1;
-            }
-          }
-        } catch {
-          // skip this user
-        }
-      }
+    } catch (err) {
+      console.warn('collectionGroup error in cupo-por-fecha:', err);
     }
 
     return res.status(200).json({ ok: true, fecha, counts });

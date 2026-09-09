@@ -129,6 +129,47 @@ export const carryoverService = {
     }
   },
 
+  // Calcular arrastre para una sucursal específica de manera dinámica
+  async calculateCarryoverForSucursal(year, month, sucursalId) {
+    try {
+      if (!sucursalId || sucursalId === 'global') {
+        return this.getCarryoverForMonth(year, month);
+      }
+
+      const startDateCurrentMonth = new Date(year, month - 1, 1);
+      const allTransactions = await transactionService.getAll({
+        sucursalId: sucursalId
+      });
+
+      let totalIngresosPrevios = 0;
+      let totalGastosPagadosPrevios = 0;
+
+      allTransactions.forEach(t => {
+        const tDate = t.date?.toDate ? t.date.toDate() : new Date(t.date);
+        if (tDate < startDateCurrentMonth) {
+          if (t.type === 'entrada') {
+            totalIngresosPrevios += t.amount || 0;
+          } else if (t.type === 'salida' && t.status === 'pagado') {
+            totalGastosPagadosPrevios += t.amount || 0;
+          }
+        }
+      });
+
+      const saldoArrastre = Math.max(0, totalIngresosPrevios - totalGastosPagadosPrevios);
+      return {
+        year,
+        month,
+        sucursalId,
+        totalIngresos: totalIngresosPrevios,
+        totalGastosPagados: totalGastosPagadosPrevios,
+        saldoArrastre
+      };
+    } catch (error) {
+      console.error('Error calculando arrastre por sucursal:', error);
+      return null;
+    }
+  },
+
   // Inicializar el sistema de arrastre (para el mes actual)
   async initializeCarryoverSystem() {
     try {

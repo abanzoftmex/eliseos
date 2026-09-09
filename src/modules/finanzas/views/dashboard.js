@@ -10,9 +10,11 @@ import { generalService } from "@finanzas/lib/services/generalService";
 import { transactionService } from "@finanzas/lib/services/transactionService";
 import { conceptService } from "@finanzas/lib/services/conceptService";
 import { recurringExpenseService } from "@finanzas/lib/services/recurringExpenseService";
+import useSucursalStore, { GLOBAL_SUCURSAL_ID } from "@finanzas/stores/sucursalStore";
 
 const Dashboard = () => {
   const { error, success } = useToast();
+  const { selectedSucursal, getSelectedSucursalData } = useSucursalStore();
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState({
     entradas: 0,
@@ -32,7 +34,7 @@ const Dashboard = () => {
   useEffect(() => {
     loadDashboardData();
     updateMonthName();
-  }, [currentDate]);
+  }, [currentDate, selectedSucursal]);
 
   // Separate useEffect for recurring transactions - only on component mount
   useEffect(() => {
@@ -138,12 +140,14 @@ const Dashboard = () => {
       const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
       const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59);
 
+      const branchId = selectedSucursal !== GLOBAL_SUCURSAL_ID ? selectedSucursal : null;
+
       // Load all dashboard data in parallel for the selected month
       const [summaryData, conceptsData, trendsData, allTransactions, allConcepts] = await Promise.all([
-        dashboardService.getMonthSummary(startOfMonth, endOfMonth),
-        dashboardService.getTransactionsByConceptForDateRange(startOfMonth, endOfMonth),
-        dashboardService.getMonthlyTrends(),
-        transactionService.getByDateRange(startOfMonth, endOfMonth),
+        dashboardService.getMonthSummary(startOfMonth, endOfMonth, branchId),
+        dashboardService.getTransactionsByConceptForDateRange(startOfMonth, endOfMonth, branchId),
+        dashboardService.getMonthlyTrends(branchId),
+        transactionService.getByDateRange(startOfMonth, endOfMonth, branchId ? { sucursalId: branchId } : {}),
         conceptService.getAll(),
       ]);
 
@@ -234,13 +238,22 @@ const Dashboard = () => {
       <div className="space-y-6">
         {/* Month navigation section */}
         <div className="bg-cyan-100 rounded-lg border border-border p-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-2">
-                {currentMonthName}
-              </h2>
+              <div className="flex items-center gap-3 flex-wrap">
+                <h2 className="text-2xl font-bold text-foreground mb-1">
+                  {currentMonthName}
+                </h2>
+                {selectedSucursal !== GLOBAL_SUCURSAL_ID && (
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-600 text-white mb-1 shadow-sm">
+                    🏢 {getSelectedSucursalData().name}
+                  </span>
+                )}
+              </div>
               <p className="text-muted-foreground">
-                Resumen de transacciones financieras
+                {selectedSucursal !== GLOBAL_SUCURSAL_ID
+                  ? `Resumen de transacciones financieras de ${getSelectedSucursalData().name}`
+                  : "Resumen de transacciones financieras global (todas las sedes)"}
               </p>
             </div>
             <AdvancedDateSelector

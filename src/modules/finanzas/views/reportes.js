@@ -15,6 +15,7 @@ import { providerService } from "@finanzas/lib/services/providerService";
 import { sucursalService } from "@finanzas/lib/services/sucursalService";
 import { useAuth } from "@finanzas/context/AuthContext";
 import useReportStore from "@finanzas/lib/stores/reportStore";
+import useSucursalStore, { GLOBAL_SUCURSAL_ID } from "@finanzas/stores/sucursalStore";
 import {
   CalendarIcon,
   DocumentArrowDownIcon,
@@ -34,6 +35,7 @@ const Reportes = () => {
   const { success, error } = useToast();
   const { user } = useAuth();
   const { showIncomeInBreakdown, toggleShowIncomeInBreakdown } = useReportStore();
+  const { selectedSucursal, setSelectedSucursal, getSelectedSucursalData } = useSucursalStore();
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [transactions, setTransactions] = useState([]);
@@ -56,7 +58,14 @@ const Reportes = () => {
     conceptId: "",
     subconceptId: "",
     division: "",
+    sucursalId: "",
   });
+
+  // Sincronizar sucursal seleccionada global con los filtros de reportes
+  useEffect(() => {
+    const sucursalVal = selectedSucursal !== GLOBAL_SUCURSAL_ID ? selectedSucursal : "";
+    setFilters(prev => ({ ...prev, sucursalId: sucursalVal }));
+  }, [selectedSucursal]);
   const [currentMonthName, setCurrentMonthName] = useState("");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [concepts, setConcepts] = useState([]);
@@ -413,11 +422,25 @@ const Reportes = () => {
       <div className="space-y-6">
         {/* Filters Section */}
         <div className="bg-background rounded-lg border border-border p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-foreground flex items-center">
-              <ChartBarIcon className="h-5 w-5 mr-2" />
-              Filtros de Reporte
-            </h2>
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
+            <div>
+              <div className="flex items-center gap-3 flex-wrap">
+                <h2 className="text-xl font-semibold text-foreground flex items-center">
+                  <ChartBarIcon className="h-5 w-5 mr-2" />
+                  Filtros de Reporte
+                </h2>
+                {selectedSucursal !== GLOBAL_SUCURSAL_ID && (
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-600 text-white shadow-sm">
+                    🏢 {getSelectedSucursalData().name}
+                  </span>
+                )}
+              </div>
+              {selectedSucursal !== GLOBAL_SUCURSAL_ID && (
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Generando reporte exclusivo para {getSelectedSucursalData().name}
+                </p>
+              )}
+            </div>
             <AdvancedDateSelector
               currentDate={currentDate}
               onDateChange={handleDateChange}
@@ -539,16 +562,18 @@ const Reportes = () => {
                 Sucursales
               </label>
               <select
-                value={filters.division}
-                onChange={(e) =>
-                  handleFilterChange("division", e.target.value)
-                }
+                value={filters.sucursalId || ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  handleFilterChange("sucursalId", val);
+                  setSelectedSucursal(val || GLOBAL_SUCURSAL_ID);
+                }}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
               >
-                <option value="">Todas</option>
+                <option value="">Todas (Global)</option>
                 {sucursales.map((sucursal) => (
                   <option key={sucursal.id} value={sucursal.id}>
-                    {sucursal.name}
+                    {sucursal.name || sucursal.nombre}
                   </option>
                 ))}
               </select>

@@ -3,11 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export const ALL_SUCURSALES_ID = 'todas';
 
-const DEFAULT_SUCURSALES = [
-    { id: 'cdmx', name: 'Ciudad de México' },
-    { id: 'valquirico', name: 'Valquirico' },
-    { id: 'puebla', name: 'Puebla' }
-];
+const DEFAULT_SUCURSALES = [];
 
 const useSucursalStore = create(
     persist(
@@ -18,7 +14,16 @@ const useSucursalStore = create(
 
             // Acciones
             setSucursal: (sucursalId) => set({ selectedSucursal: sucursalId }),
-            setSucursales: (newSucursales) => set({ sucursales: newSucursales }),
+            setSucursales: (newSucursales) => {
+                const list = Array.isArray(newSucursales) ? newSucursales : [];
+                set((state) => {
+                    const exists = state.selectedSucursal === ALL_SUCURSALES_ID || list.some((s) => s.id === state.selectedSucursal);
+                    return {
+                        sucursales: list,
+                        selectedSucursal: exists ? state.selectedSucursal : ALL_SUCURSALES_ID
+                    };
+                });
+            },
 
             // Helper to get current sucursal object
             getSucursal: (id) => {

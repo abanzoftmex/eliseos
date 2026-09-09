@@ -17,6 +17,7 @@ import { conceptService } from "../../lib/services/conceptService";
 import { subconceptService } from "../../lib/services/subconceptService";
 import { paymentService } from "../../lib/services/paymentService";
 import { sendEmailWithRateLimit } from "../../lib/utils";
+import useSucursalStore, { GLOBAL_SUCURSAL_ID } from "@finanzas/stores/sucursalStore";
 
 const TransactionForm = ({
   type,
@@ -45,6 +46,9 @@ const TransactionForm = ({
       initialDate = `${year}-${month}-${day}`;
     }
     
+    const storeSucursal = useSucursalStore.getState().selectedSucursal;
+    const defaultSucursalId = storeSucursal !== GLOBAL_SUCURSAL_ID ? storeSucursal : "";
+
     return {
       type: type || initialData?.type || "entrada",
       generalId: initialData?.generalId || "",
@@ -55,7 +59,7 @@ const TransactionForm = ({
       date: initialDate,
       providerId: initialData?.providerId || "", // Only for salidas
       clienteId: initialData?.clienteId || "",
-      sucursalId: initialData?.sucursalId || "",
+      sucursalId: initialData?.sucursalId || defaultSucursalId,
     };
   });
 
@@ -518,6 +522,8 @@ const TransactionForm = ({
 
       // Reset form if creating new transaction
       if (!initialData) {
+        const storeSucursal = useSucursalStore.getState().selectedSucursal;
+        const defaultSucursalId = storeSucursal !== GLOBAL_SUCURSAL_ID ? storeSucursal : "";
         setFormData({
           type: type || "entrada",
           generalId: "",
@@ -528,7 +534,7 @@ const TransactionForm = ({
           date: new Date().toISOString().split("T")[0],
           providerId: "",
           clienteId: "",
-          sucursalId: "",
+          sucursalId: defaultSucursalId,
         });
         setFiles([]);
         setAttachmentProgress(0);

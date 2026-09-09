@@ -28,6 +28,7 @@ import {
   UserCircle
 } from "lucide-react";
 import Select from "react-select";
+import useSucursalStore, { GLOBAL_SUCURSAL_ID } from "@finanzas/stores/sucursalStore";
 
 const Historial = () => {
   const router = useRouter();
@@ -41,6 +42,17 @@ const Historial = () => {
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { selectedSucursal, getSelectedSucursalData } = useSucursalStore();
+
+  // Sincronizar sucursal seleccionada del store con los filtros locales
+  useEffect(() => {
+    if (selectedSucursal !== GLOBAL_SUCURSAL_ID) {
+      setFilters(prev => ({ ...prev, sucursalId: selectedSucursal }));
+    } else {
+      setFilters(prev => ({ ...prev, sucursalId: "" }));
+    }
+    setCurrentPage(1);
+  }, [selectedSucursal]);
 
   // Custom styles for React Select
   const selectStyles = {
@@ -594,9 +606,18 @@ const Historial = () => {
                 <ClockIcon className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Historial</h1>
+                <div className="flex items-center space-x-2 flex-wrap gap-y-2">
+                  <h1 className="text-2xl font-bold text-gray-900">Historial</h1>
+                  {selectedSucursal !== GLOBAL_SUCURSAL_ID && (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-700 text-white shadow-sm">
+                      🏢 {getSelectedSucursalData().name}
+                    </span>
+                  )}
+                </div>
                 <p className="text-gray-600 mt-1">
-                  Consulta y filtra todas las transacciones
+                  {selectedSucursal !== GLOBAL_SUCURSAL_ID
+                    ? `Transacciones registradas en ${getSelectedSucursalData().name}`
+                    : "Consulta y filtra todas las transacciones (global)"}
                 </p>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { 
   Mail, 
   Phone, 
@@ -20,7 +21,10 @@ import {
   ChevronRight,
   Save,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  ClipboardList,
+  CreditCard,
+  ArrowRight
 } from 'lucide-react';
 import PortalLayout, { usePortal } from '@/components/portal/PortalLayout';
 
@@ -160,6 +164,14 @@ function PerfilContent() {
   const [feedback, setFeedback] = useState(null);
   const [editingName, setEditingName] = useState(false);
   const [currentName, setCurrentName] = useState(user?.name || '');
+  const [finanzas, setFinanzas] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/portal-usuarios/estado-de-cuenta')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setFinanzas(d); })
+      .catch(() => {});
+  }, []);
 
   const updateField = async (key, val) => {
     try {
@@ -326,6 +338,63 @@ function PerfilContent() {
               fieldKey="ocupacion" onSave={updateField} accent="#64748b" 
             />
           </div>
+        </div>
+      </div>
+
+      {/* ── ACCESOS DIRECTOS: HISTORIA CLÍNICA & ESTADO DE CUENTA ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in [animation-delay:0.15s]">
+        {/* Tarjeta Historia Clínica (Punto 3) */}
+        <div className="bg-gradient-to-br from-science-900 to-science-950 text-white rounded-[2rem] p-6 sm:p-8 shadow-xl border border-science-800 flex flex-col justify-between gap-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="w-12 h-12 rounded-2xl bg-primary/20 text-primary flex items-center justify-center border border-primary/30">
+                <ClipboardList size={24} />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
+                Expediente
+              </span>
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-white tracking-tight">Mi Historia Clínica</h3>
+              <p className="text-xs text-science-300 font-medium mt-1 leading-relaxed">
+                Revisa tus valoraciones médicas, fichas deportivas, objetivos físicos y consultas de seguimiento.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/portal/clinica"
+            className="w-full py-3 px-5 bg-primary hover:bg-science-400 text-science-950 font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 group"
+          >
+            <span>Ver Expediente Clínico</span>
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+
+        {/* Tarjeta Estado de Cuenta & Pagos (Punto 4) */}
+        <div className="bg-white rounded-[2rem] border border-science-100 p-6 sm:p-8 shadow-sm flex flex-col justify-between gap-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                <CreditCard size={24} />
+              </div>
+              <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${(finanzas?.totalPendiente || 0) > 0 ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'}`}>
+                {(finanzas?.totalPendiente || 0) > 0 ? `$${finanzas.totalPendiente.toFixed(2)} por liquidar` : 'Al corriente'}
+              </span>
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-science-900 tracking-tight">Mis Pagos y Comprobantes</h3>
+              <p className="text-xs text-science-500 font-medium mt-1 leading-relaxed">
+                Historial de compras en sucursal, pagos de clases, mensualidades y comprobantes validados.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/portal/estado-de-cuenta"
+            className="w-full py-3 px-5 bg-science-900 hover:bg-primary text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md flex items-center justify-center gap-2 group"
+          >
+            <span>Consultar Estado de Cuenta</span>
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
       </div>
 

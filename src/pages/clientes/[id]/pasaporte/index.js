@@ -834,28 +834,158 @@ export default function AdminPasaporteClientePage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 text-center space-y-4">
-              <h4 className="font-black text-slate-900">Así Empecé el Año</h4>
-              <p className="text-xs text-slate-400">Fecha de inicio: <strong>{passport.fechaInicio || 'No definida'}</strong></p>
-              <div className="w-full aspect-[4/5] max-w-xs mx-auto bg-slate-200 rounded-2xl overflow-hidden flex items-center justify-center">
-                {passport.fotoInicioUrl ? (
-                  <img src={passport.fotoInicioUrl} alt="Inicio" className="w-full h-full object-cover" />
+          {/* Grid de 3 fotografías: Frente, Lado y Espalda */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {/* Frente */}
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 text-center space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-wider text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-full">Ángulo 1</span>
+                <span className="text-[10px] text-slate-400 font-bold">{passport.fechaInicio || 'Inicio Reto'}</span>
+              </div>
+              <h4 className="font-black text-slate-900 text-sm">De Frente</h4>
+              <div className="w-full aspect-[4/5] bg-slate-200 rounded-2xl overflow-hidden flex items-center justify-center">
+                {(passport.fotosPostura?.frenteUrl || passport.fotoInicioUrl) ? (
+                  <img
+                    src={passport.fotosPostura?.frenteUrl || passport.fotoInicioUrl}
+                    alt="Frente"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
-                  <span className="text-xs text-slate-400 font-bold">Sin foto inicial</span>
+                  <div className="p-4 text-center space-y-1">
+                    <Camera size={24} className="mx-auto text-slate-400" />
+                    <p className="text-[11px] font-bold text-slate-400">Sin foto de frente</p>
+                  </div>
                 )}
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 text-center space-y-4">
-              <h4 className="font-black text-slate-900">Así Terminé el Año</h4>
-              <p className="text-xs text-slate-400">Fecha de cierre: <strong>{passport.fechaFin || 'Pendiente al finalizar año'}</strong></p>
-              <div className="w-full aspect-[4/5] max-w-xs mx-auto bg-slate-200 rounded-2xl overflow-hidden flex items-center justify-center">
-                {passport.fotoFinUrl ? (
-                  <img src={passport.fotoFinUrl} alt="Fin" className="w-full h-full object-cover" />
+            {/* Lado */}
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 text-center space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-wider text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-full">Ángulo 2</span>
+                <span className="text-[10px] text-slate-400 font-bold">{passport.fechaInicio || 'Inicio Reto'}</span>
+              </div>
+              <h4 className="font-black text-slate-900 text-sm">De Lado / Perfil</h4>
+              <div className="w-full aspect-[4/5] bg-slate-200 rounded-2xl overflow-hidden flex items-center justify-center">
+                {passport.fotosPostura?.ladoUrl ? (
+                  <img
+                    src={passport.fotosPostura.ladoUrl}
+                    alt="Lado"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
-                  <span className="text-xs text-slate-400 font-bold">Sin foto final</span>
+                  <div className="p-4 text-center space-y-1">
+                    <Camera size={24} className="mx-auto text-slate-400" />
+                    <p className="text-[11px] font-bold text-slate-400">Sin foto de lado</p>
+                  </div>
                 )}
+              </div>
+            </div>
+
+            {/* Espalda */}
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 text-center space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-wider text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-full">Ángulo 3</span>
+                <span className="text-[10px] text-slate-400 font-bold">{passport.fechaInicio || 'Inicio Reto'}</span>
+              </div>
+              <h4 className="font-black text-slate-900 text-sm">De Espalda</h4>
+              <div className="w-full aspect-[4/5] bg-slate-200 rounded-2xl overflow-hidden flex items-center justify-center">
+                {passport.fotosPostura?.espaldaUrl ? (
+                  <img
+                    src={passport.fotosPostura.espaldaUrl}
+                    alt="Espalda"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="p-4 text-center space-y-1">
+                    <Camera size={24} className="mx-auto text-slate-400" />
+                    <p className="text-[11px] font-bold text-slate-400">Sin foto de espaldas</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Cierre de año: 3 fotografías (Frente, Lado y Espalda) */}
+          <div className="pt-6 border-t border-slate-100 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-500">Resultado Construido</span>
+                <h4 className="font-black text-slate-900 text-sm">Fotos de Cierre ({passport.fechaFin || 'Diciembre'})</h4>
+              </div>
+              <span className="text-xs text-slate-400 font-bold">
+                {passport.fotosCierre?.updatedAt ? `Actualizado: ${passport.fotosCierre.updatedAt.split('T')[0]}` : ''}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {/* Frente Cierre */}
+              <div className="p-6 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-center space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-100/60 px-2 py-0.5 rounded-full">Frente</span>
+                  <span className="text-[10px] text-slate-400 font-bold">{passport.fechaFin || 'Cierre'}</span>
+                </div>
+                <h4 className="font-black text-slate-900 text-sm">Cierre: De Frente</h4>
+                <div className="w-full aspect-[4/5] bg-slate-100 rounded-2xl overflow-hidden flex items-center justify-center">
+                  {(passport.fotosCierre?.frenteUrl || passport.fotoFinUrl) ? (
+                    <img
+                      src={passport.fotosCierre?.frenteUrl || passport.fotoFinUrl}
+                      alt="Cierre Frente"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="p-4 text-slate-400 space-y-1 text-center">
+                      <Trophy size={28} className="mx-auto text-amber-300" />
+                      <p className="text-[11px] font-bold">Sin foto frontal</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Lado Cierre */}
+              <div className="p-6 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-center space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-100/60 px-2 py-0.5 rounded-full">Lado</span>
+                  <span className="text-[10px] text-slate-400 font-bold">{passport.fechaFin || 'Cierre'}</span>
+                </div>
+                <h4 className="font-black text-slate-900 text-sm">Cierre: De Lado</h4>
+                <div className="w-full aspect-[4/5] bg-slate-100 rounded-2xl overflow-hidden flex items-center justify-center">
+                  {passport.fotosCierre?.ladoUrl ? (
+                    <img
+                      src={passport.fotosCierre.ladoUrl}
+                      alt="Cierre Lado"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="p-4 text-slate-400 space-y-1 text-center">
+                      <Trophy size={28} className="mx-auto text-amber-300" />
+                      <p className="text-[11px] font-bold">Sin foto de lado</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Espalda Cierre */}
+              <div className="p-6 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-center space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-100/60 px-2 py-0.5 rounded-full">Espalda</span>
+                  <span className="text-[10px] text-slate-400 font-bold">{passport.fechaFin || 'Cierre'}</span>
+                </div>
+                <h4 className="font-black text-slate-900 text-sm">Cierre: De Espalda</h4>
+                <div className="w-full aspect-[4/5] bg-slate-100 rounded-2xl overflow-hidden flex items-center justify-center">
+                  {passport.fotosCierre?.espaldaUrl ? (
+                    <img
+                      src={passport.fotosCierre.espaldaUrl}
+                      alt="Cierre Espalda"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="p-4 text-slate-400 space-y-1 text-center">
+                      <Trophy size={28} className="mx-auto text-amber-300" />
+                      <p className="text-[11px] font-bold">Sin foto de espalda</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -1186,20 +1316,26 @@ export default function AdminPasaporteClientePage() {
 }
 
 function PhotosModalComponent({ isOpen, onClose, initialData, clientUserId, onSave, submitting }) {
-  const [fotoInicioUrl, setFotoInicioUrl] = useState(initialData?.fotoInicioUrl || '');
+  const [frenteUrl, setFrenteUrl] = useState(initialData?.fotosPostura?.frenteUrl || initialData?.fotoInicioUrl || '');
+  const [ladoUrl, setLadoUrl] = useState(initialData?.fotosPostura?.ladoUrl || '');
+  const [espaldaUrl, setEspaldaUrl] = useState(initialData?.fotosPostura?.espaldaUrl || '');
   const [fechaInicio, setFechaInicio] = useState(initialData?.fechaInicio || '2026-01-01');
-  const [fotoFinUrl, setFotoFinUrl] = useState(initialData?.fotoFinUrl || '');
+
+  const [cierreFrenteUrl, setCierreFrenteUrl] = useState(initialData?.fotosCierre?.frenteUrl || initialData?.fotoFinUrl || '');
+  const [cierreLadoUrl, setCierreLadoUrl] = useState(initialData?.fotosCierre?.ladoUrl || '');
+  const [cierreEspaldaUrl, setCierreEspaldaUrl] = useState(initialData?.fotosCierre?.espaldaUrl || '');
   const [fechaFin, setFechaFin] = useState(initialData?.fechaFin || '');
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-[2.5rem] p-8 max-w-2xl w-full shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-[2.5rem] p-6 sm:p-8 max-w-4xl w-full shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <div>
             <span className="text-[10px] font-black uppercase tracking-wider text-amber-500">Transformación del Reto</span>
-            <h3 className="text-xl font-black text-slate-900">Fotos de Inicio y Cierre</h3>
+            <h3 className="text-xl font-black text-slate-900">Fotografías del Atleta</h3>
+            <p className="text-xs text-slate-500 font-medium">Registro de postura inicial y de cierre en 3 ángulos (frente, lado y espalda)</p>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-900 p-1">
             <X size={20} />
@@ -1210,63 +1346,130 @@ function PhotosModalComponent({ isOpen, onClose, initialData, clientUserId, onSa
           onSubmit={(e) => {
             e.preventDefault();
             onSave({
-              fotoInicioUrl,
+              frenteUrl,
+              ladoUrl,
+              espaldaUrl,
+              fotoInicioUrl: frenteUrl,
               fechaInicio,
-              fotoFinUrl,
+              cierreFrenteUrl,
+              cierreLadoUrl,
+              cierreEspaldaUrl,
+              fotoFinUrl: cierreFrenteUrl,
               fechaFin
             });
           }}
           className="space-y-6"
         >
-          {/* Grid 2 columnas: Inicio y Fin */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            
-            {/* Inicio */}
-            <div className="p-4 bg-slate-50/70 rounded-2xl border border-slate-100 space-y-4">
+          {/* 1. Sección Fotos de Postura Inicial */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
               <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
-                <Camera size={14} className="text-cyan-500" /> Así Empecé el Año
+                <Camera size={15} className="text-cyan-500" /> 1. Fotos de Postura Inicial (Así Empecé)
               </h4>
-              <ImageDropzone
-                label="Foto Inicial"
-                value={fotoInicioUrl}
-                onChange={setFotoInicioUrl}
-                placeholder="Arrastra o selecciona la foto inicial"
-                clientUserId={clientUserId}
-              />
-              <div>
-                <label className="block text-[11px] font-bold text-slate-500 mb-1">Fecha de Inicio</label>
+              <div className="flex items-center gap-2">
+                <label className="text-[11px] font-bold text-slate-500">Fecha Inicio:</label>
                 <input
                   type="date"
                   value={fechaInicio}
                   onChange={(e) => setFechaInicio(e.target.value)}
-                  className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold"
+                  className="p-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold"
                 />
               </div>
             </div>
 
-            {/* Cierre */}
-            <div className="p-4 bg-slate-50/70 rounded-2xl border border-slate-100 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* Frente */}
+              <div className="p-3 bg-slate-50/70 rounded-2xl border border-slate-100 space-y-2">
+                <span className="text-[11px] font-bold text-slate-700 block text-center">Frente</span>
+                <ImageDropzone
+                  label="Foto Frente"
+                  value={frenteUrl}
+                  onChange={setFrenteUrl}
+                  placeholder="Arrastra o selecciona foto frontal"
+                  clientUserId={clientUserId}
+                />
+              </div>
+
+              {/* Lado */}
+              <div className="p-3 bg-slate-50/70 rounded-2xl border border-slate-100 space-y-2">
+                <span className="text-[11px] font-bold text-slate-700 block text-center">Lado / Perfil</span>
+                <ImageDropzone
+                  label="Foto Lado"
+                  value={ladoUrl}
+                  onChange={setLadoUrl}
+                  placeholder="Arrastra o selecciona foto de perfil"
+                  clientUserId={clientUserId}
+                />
+              </div>
+
+              {/* Espalda */}
+              <div className="p-3 bg-slate-50/70 rounded-2xl border border-slate-100 space-y-2">
+                <span className="text-[11px] font-bold text-slate-700 block text-center">Espalda</span>
+                <ImageDropzone
+                  label="Foto Espalda"
+                  value={espaldaUrl}
+                  onChange={setEspaldaUrl}
+                  placeholder="Arrastra o selecciona foto de espalda"
+                  clientUserId={clientUserId}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Sección Fotos de Cierre */}
+          <div className="space-y-3 pt-2 border-t border-slate-100">
+            <div className="flex items-center justify-between">
               <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
-                <Trophy size={14} className="text-amber-500" /> Así Terminé el Año
+                <Trophy size={15} className="text-amber-500" /> 2. Fotos de Cierre (Así Terminé)
               </h4>
-              <ImageDropzone
-                label="Foto de Cierre"
-                value={fotoFinUrl}
-                onChange={setFotoFinUrl}
-                placeholder="Arrastra o selecciona la foto final"
-                clientUserId={clientUserId}
-              />
-              <div>
-                <label className="block text-[11px] font-bold text-slate-500 mb-1">Fecha de Finalización</label>
+              <div className="flex items-center gap-2">
+                <label className="text-[11px] font-bold text-slate-500">Fecha Cierre:</label>
                 <input
                   type="date"
                   value={fechaFin}
                   onChange={(e) => setFechaFin(e.target.value)}
-                  className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold"
+                  className="p-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold"
                 />
               </div>
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* Frente */}
+              <div className="p-3 bg-amber-500/5 rounded-2xl border border-amber-500/20 space-y-2">
+                <span className="text-[11px] font-bold text-slate-700 block text-center">Frente</span>
+                <ImageDropzone
+                  label="Foto Frente"
+                  value={cierreFrenteUrl}
+                  onChange={setCierreFrenteUrl}
+                  placeholder="Arrastra o selecciona foto frontal"
+                  clientUserId={clientUserId}
+                />
+              </div>
+
+              {/* Lado */}
+              <div className="p-3 bg-amber-500/5 rounded-2xl border border-amber-500/20 space-y-2">
+                <span className="text-[11px] font-bold text-slate-700 block text-center">Lado / Perfil</span>
+                <ImageDropzone
+                  label="Foto Lado"
+                  value={cierreLadoUrl}
+                  onChange={setCierreLadoUrl}
+                  placeholder="Arrastra o selecciona foto de perfil"
+                  clientUserId={clientUserId}
+                />
+              </div>
+
+              {/* Espalda */}
+              <div className="p-3 bg-amber-500/5 rounded-2xl border border-amber-500/20 space-y-2">
+                <span className="text-[11px] font-bold text-slate-700 block text-center">Espalda</span>
+                <ImageDropzone
+                  label="Foto Espalda"
+                  value={cierreEspaldaUrl}
+                  onChange={setCierreEspaldaUrl}
+                  placeholder="Arrastra o selecciona foto de espalda"
+                  clientUserId={clientUserId}
+                />
+              </div>
+            </div>
           </div>
 
           <div className="flex gap-3 pt-2">

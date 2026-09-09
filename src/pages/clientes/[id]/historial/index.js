@@ -45,26 +45,48 @@ function HistorialConsultasPage() {
 
     setLoading(true);
     try {
-      // Cargar información del cliente
-      const clienteDoc = await getDoc(doc(db, 'clientes', clienteId));
+      // Cargar información del cliente (con fallback a colección atletas)
+      let clienteDoc = await getDoc(doc(db, 'clientes', clienteId));
+      if (!clienteDoc.exists()) {
+        clienteDoc = await getDoc(doc(db, 'atletas', clienteId));
+      }
       if (clienteDoc.exists()) {
-        setCliente(clienteDoc.data());
+        setCliente({ id: clienteDoc.id, ...clienteDoc.data() });
       }
 
       // Cargar consultas completadas
       const consultasRef = collection(db, 'consultas');
-      const q = query(
-        consultasRef,
-        where('clienteId', '==', clienteId),
-        where('status', '==', 'completed'),
-        orderBy('updatedAt', 'desc')
-      );
+      let consultasList = [];
+      try {
+        const q = query(
+          consultasRef,
+          where('clienteId', '==', clienteId),
+          where('status', '==', 'completed'),
+          orderBy('updatedAt', 'desc')
+        );
+        const querySnapshot = await getDocs(q);
+        consultasList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      } catch (e1) {
+        // Fallback si falta índice compuesto o se filtran sin status
+        console.warn('Fallback consulta query:', e1);
+        const q2 = query(consultasRef, where('clienteId', '==', clienteId));
+        const s2 = await getDocs(q2);
+        consultasList = s2.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      }
 
-      const querySnapshot = await getDocs(q);
-      const consultasList = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      // Si no se encontraron por clienteId, intentar por atletaId
+      if (consultasList.length === 0) {
+        try {
+          const qAtleta = query(consultasRef, where('atletaId', '==', clienteId));
+          const sAtleta = await getDocs(qAtleta);
+          consultasList = sAtleta.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (e2) {
+          console.warn('Fallback atletaId query:', e2);
+        }
+      }
+
+      // Ordenar en memoria por fecha más reciente
+      consultasList.sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0));
 
       setConsultas(consultasList);
       

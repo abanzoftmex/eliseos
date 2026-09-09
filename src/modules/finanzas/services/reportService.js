@@ -26,13 +26,16 @@ export const reportService = {
             generalId: filters.generalId,
             conceptId: filters.conceptId,
             subconceptId: filters.subconceptId,
-            division: filters.division
+            division: filters.division,
+            sucursalId: filters.sucursalId
           }
         );
 
         // Obtener TODAS las transacciones pendientes hasta el mes del reporte
         // Solo incluir gastos pendientes que sean del mes del reporte o anteriores
-        const allTransactions = await transactionService.getAll();
+        const allTransactions = await transactionService.getAll(
+          filters.sucursalId && filters.sucursalId !== 'global' ? { sucursalId: filters.sucursalId } : {}
+        );
         const reportEndDate = new Date(filters.endDate);
         const reportYear = reportEndDate.getFullYear();
         const reportMonth = reportEndDate.getMonth(); // 0-based (0=enero, 11=diciembre)
@@ -71,6 +74,11 @@ export const reportService = {
             return false;
           }
           
+          // Filtro de sucursal
+          if (filters.sucursalId && filters.sucursalId !== 'global' && transaction.sucursalId !== filters.sucursalId) {
+            return false;
+          }
+
           // Filtro de división: solo aplicar si se especificó Y la transacción tiene división
           if (filters.division) {
             // Si el filtro está activo, solo incluir transacciones que coincidan con esa división
@@ -211,7 +219,7 @@ export const reportService = {
           // Si estamos viendo octubre, buscamos el arrastre calculado PARA octubre (desde septiembre)
           
           console.log(`🔍 Buscando arrastre calculado PARA ${month}/${year}`);
-          monthlyCarryover = await carryoverService.getCarryoverForMonth(year, month);
+          monthlyCarryover = await carryoverService.calculateCarryoverForSucursal(year, month, filters.sucursalId);
           console.log('📊 Resultado de carryover desde registro:', monthlyCarryover);
           
           if (monthlyCarryover && monthlyCarryover.saldoArrastre > 0) {

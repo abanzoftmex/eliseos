@@ -20,11 +20,33 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { fotoInicioUrl, fechaInicio, fotoFinUrl, fechaFin, year = PASSPORT_DEFAULT_YEAR } = req.body || {};
-
-    const result = await updatePassportPhotos(userId, Number(year), {
+    const {
+      frenteUrl,
+      ladoUrl,
+      espaldaUrl,
+      fotosPostura,
       fotoInicioUrl,
       fechaInicio,
+      cierreFrenteUrl,
+      cierreLadoUrl,
+      cierreEspaldaUrl,
+      fotosCierre,
+      fotoFinUrl,
+      fechaFin,
+      year = PASSPORT_DEFAULT_YEAR
+    } = req.body || {};
+
+    const result = await updatePassportPhotos(userId, Number(year), {
+      frenteUrl,
+      ladoUrl,
+      espaldaUrl,
+      fotosPostura,
+      fotoInicioUrl,
+      fechaInicio,
+      cierreFrenteUrl,
+      cierreLadoUrl,
+      cierreEspaldaUrl,
+      fotosCierre,
       fotoFinUrl,
       fechaFin
     });

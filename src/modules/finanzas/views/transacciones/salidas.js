@@ -10,6 +10,7 @@ import { transactionService } from "@finanzas/lib/services/transactionService";
 import { conceptService } from "@finanzas/lib/services/conceptService";
 import { providerService } from "@finanzas/lib/services/providerService";
 import { sucursalService } from "@finanzas/lib/services/sucursalService";
+import useSucursalStore, { GLOBAL_SUCURSAL_ID } from "@finanzas/stores/sucursalStore";
 import Link from "next/link";
 import { 
   PlusIcon,
@@ -44,6 +45,16 @@ const SolicitudesPago = () => {
   });
   const [initialized, setInitialized] = useState(false);
   const toast = useToast();
+  const { selectedSucursal, getSelectedSucursalData } = useSucursalStore();
+
+  // Sincronizar sucursal seleccionada del store con los filtros locales
+  useEffect(() => {
+    if (selectedSucursal !== GLOBAL_SUCURSAL_ID) {
+      setFilters(prev => ({ ...prev, sucursalId: selectedSucursal }));
+    } else {
+      setFilters(prev => ({ ...prev, sucursalId: "" }));
+    }
+  }, [selectedSucursal]);
 
   // Check permissions based on user role
   const canManageTransactions = checkPermission("canManageTransactions");
@@ -375,10 +386,15 @@ const SolicitudesPago = () => {
                   <ArrowTrendingDownIcon className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 flex-wrap gap-y-2">
                     <h1 className="text-2xl font-bold text-gray-900">
                       Gastos - {currentMonthName}
                     </h1>
+                    {selectedSucursal !== GLOBAL_SUCURSAL_ID && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-600 text-white shadow-sm">
+                        🏢 {getSelectedSucursalData().name}
+                      </span>
+                    )}
                     <AdvancedDateSelector
                       currentDate={currentDate}
                       onDateChange={handleDateChange}
@@ -387,7 +403,9 @@ const SolicitudesPago = () => {
                     />
                   </div>
                   <p className="text-gray-600 mt-1">
-                    Gestiona y realiza seguimiento de todos los gastos de la organización
+                    {selectedSucursal !== GLOBAL_SUCURSAL_ID
+                      ? `Gastos de la sede ${getSelectedSucursalData().name}`
+                      : "Gestiona y realiza seguimiento de todos los gastos de la organización (global)"}
                   </p>
                   <div className="flex items-center mt-2 text-sm text-gray-500">
                     <ClipboardIcon className="h-4 w-4 mr-1" />

@@ -39,7 +39,7 @@ export default async function handler(req, res) {
 
           await createIngresoInScienceChago({
             externalId: generateTransactionExternalId(),
-            sucursalId: cargo.sucursalId || 'valquirico',
+            sucursalId: cargo.sucursalId || '',
             clienteId: userId,
             amount: Number(cargo.monto || 0),
             date: transactionDate,

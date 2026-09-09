@@ -49,7 +49,7 @@ const Layout = ({
         <div className={`transition-all duration-500 ease-in-out ${!hideSidebar ? (isCollapsed ? 'lg:pl-20' : 'lg:pl-64') : ''}`}>
           {/* Top Navigation Bar with Glassmorphism */}
           {showBreadcrumbs && (
-            <div className="sticky top-0 z-30 glass border-b border-science-200/50 px-8 py-4 no-print flex items-center justify-between">
+            <div className="sticky top-0 z-30 glass border-b border-science-200/50 px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4 no-print flex items-center justify-between">
               <div className="flex flex-col gap-1 ml-12 lg:ml-0">
                 <Breadcrumbs items={breadcrumbs} />
                 <div className="flex items-center gap-4">
@@ -67,7 +67,7 @@ const Layout = ({
           )}
 
           {/* Main Content with Fade-in animation */}
-          <main className="animate-fade-in p-8">
+          <main className="animate-fade-in p-4 sm:p-6 lg:p-8">
             {children}
           </main>
         </div>

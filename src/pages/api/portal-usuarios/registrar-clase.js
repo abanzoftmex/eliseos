@@ -28,36 +28,34 @@ export default async function handler(req, res) {
     const classData = classResult.class;
 
     // ── Verificar cupo para esta fecha específica ────────────────────────────
+    // ── Verificar cupo para esta fecha específica ────────────────────────────
     if (classData.maxParticipantes && classData.maxParticipantes > 0) {
       let enrolledCount = 0;
       try {
-        // Single-field collectionGroup query (Firestore auto-indexes single fields)
-        const q = query(
+        // Consulta directa optimizada por idClase en subcolecciones
+        const qClass = query(
           collectionGroup(db, 'clasesAsignadas'),
-          where('fechaAsignacionString', '==', targetDate)
+          where('idClase', '==', classId)
         );
-        const snap = await getDocs(q);
-        enrolledCount = snap.docs.filter(d => d.data().idClase === classId).length;
-      } catch {
-        // Fallback: scan collections directly
-        const [clientesSnap, atletasSnap] = await Promise.all([
-          getDocs(collection(db, 'clientes')),
-          getDocs(collection(db, 'atletas')),
-        ]);
-        for (const userDoc of [...clientesSnap.docs, ...atletasSnap.docs]) {
-          const colName = clientesSnap.docs.some(d => d.id === userDoc.id) ? 'clientes' : 'atletas';
-          try {
-            const s = await getDocs(
-              query(
-                collection(db, colName, userDoc.id, 'clasesAsignadas'),
-                where('idClase', '==', classId),
-                where('fechaAsignacionString', '==', targetDate)
-              )
-            );
-            enrolledCount += s.size;
-          } catch {
-            // skip
-          }
+        const snap = await getDocs(qClass);
+        enrolledCount = snap.docs.filter(d => {
+          const dData = d.data();
+          const matchesDate = dData.fechaAsignacionString === targetDate || dData.fechaEvaluacion === targetDate;
+          return matchesDate && dData.estado !== 'cancelada';
+        }).length;
+      } catch (err1) {
+        try {
+          // Segundo intento: por fecha asignada
+          const qDate = query(
+            collectionGroup(db, 'clasesAsignadas'),
+            where('fechaAsignacionString', '==', targetDate)
+          );
+          const snapDate = await getDocs(qDate);
+          enrolledCount = snapDate.docs.filter(d => d.data().idClase === classId && d.data().estado !== 'cancelada').length;
+        } catch (err2) {
+          // Fallback seguro inmediato sin escanear sequentialmente toda la base de datos
+          console.warn('Fallback cupo:', err2);
+          enrolledCount = classData.participantesActuales || 0;
         }
       }
 

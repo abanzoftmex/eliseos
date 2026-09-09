@@ -167,14 +167,28 @@ export default function PortalLayout({ children }) {
                   </div>
                   <Link 
                     href="/portal/perfil" 
-                    className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-science-600 hover:bg-science-50 rounded-xl transition-all"
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-science-600 hover:bg-science-50 rounded-xl transition-all"
                     onClick={() => setShowUserMenu(false)}
                   >
                     <UserIcon size={18} /> Mi Perfil
                   </Link>
+                  <Link 
+                    href="/portal/clinica" 
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-science-600 hover:bg-science-50 rounded-xl transition-all"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    <ClipboardList size={18} /> Mi Clínica
+                  </Link>
+                  <Link 
+                    href="/portal/estado-de-cuenta" 
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-science-600 hover:bg-science-50 rounded-xl transition-all"
+                    onClick={() => setShowUserMenu(false)}
+                  >
+                    <CircleDollarSign size={18} /> Estado de Cuenta
+                  </Link>
                   <button 
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-all border-t border-science-100 mt-1"
                   >
                     <LogOut size={18} /> Salir
                   </button>

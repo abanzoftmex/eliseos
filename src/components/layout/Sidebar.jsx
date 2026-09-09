@@ -45,9 +45,7 @@ const Sidebar = () => {
           ...doc.data()
         }));
 
-        if (sucursalesData.length > 0) {
-          setSucursales(sucursalesData);
-        }
+        setSucursales(sucursalesData);
       } catch (error) {
         console.error('Error fetching sucursales for sidebar:', error);
       }
@@ -285,35 +283,67 @@ const Sidebar = () => {
       </aside>
 
       <div className={`
-        lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-science-900 border-r border-science-800 transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1)
+        lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-science-900 border-r border-science-800 transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) flex flex-col
         ${sidebarOpen ? 'translate-x-0 shadow-[0_0_50px_rgba(0,0,0,0.5)]' : '-translate-x-full'}
       `}>
-        <div className="flex items-center justify-between p-8 border-b border-science-800">
-          <img src="/img/logo_dark.png" alt="Logo" className="h-10 w-auto" />
-          <button onClick={() => setSidebarOpen(false)} className="text-science-400 hover:text-white transition-colors">
-            <X size={24} />
+        <div className="flex items-center justify-between p-5 border-b border-science-800">
+          <img src="/img/logo_dark.png" alt="Logo" className="h-9 w-auto" />
+          <button onClick={() => setSidebarOpen(false)} className="text-science-400 hover:text-white transition-colors p-1.5 rounded-lg">
+            <X size={22} />
           </button>
         </div>
 
-        <nav className="p-6">
-          <ul className="space-y-2">
+        {/* Selector de Sucursal en Móvil */}
+        <div className="p-4 border-b border-science-800/80">
+          <div className="bg-science-800/60 rounded-xl p-3 border border-science-700/50">
+            <label className="text-[10px] text-science-400 font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <MapPin size={12} className="text-primary" />
+              Sucursal Activa
+            </label>
+            <select
+              value={useSucursalStore((state) => state.selectedSucursal)}
+              onChange={(e) => useSucursalStore.getState().setSucursal(e.target.value)}
+              className="w-full bg-science-900 text-white text-xs rounded-lg border border-science-700 focus:border-primary focus:ring-1 focus:ring-primary outline-none py-2 px-2 transition-all cursor-pointer"
+            >
+              <option value={ALL_SUCURSALES_ID}>Todas las sedes</option>
+              {useSucursalStore((state) => state.sucursales).map((sucursal) => (
+                <option key={sucursal.id} value={sucursal.id}>{sucursal.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Navegación Scrollable */}
+        <nav className="flex-1 overflow-y-auto custom-scrollbar p-4">
+          <ul className="space-y-1.5">
             {menuItems.map((item) => (
               <li key={item.id}>
                 <Link
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={`
-                    flex items-center p-4 rounded-xl transition-all gap-4
-                    ${item.active ? 'bg-primary text-white' : 'text-science-400 hover:bg-science-800'}
+                    flex items-center p-3 rounded-xl transition-all gap-3
+                    ${item.active ? 'bg-primary text-white font-bold shadow-md shadow-primary/20' : 'text-science-400 hover:bg-science-800 font-medium'}
                   `}
                 >
-                  <item.icon size={22} />
-                  <span className="font-bold">{item.name}</span>
+                  <item.icon size={20} />
+                  <span className="text-sm">{item.name}</span>
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
+
+        {/* Footer móvil: Salir */}
+        <div className="p-4 border-t border-science-800 space-y-2 mt-auto">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-400 hover:text-white hover:bg-red-500/20 transition-colors text-sm font-medium"
+          >
+            <LogOut size={18} />
+            <span>Cerrar Sesión</span>
+          </button>
+        </div>
       </div>
 
       {sidebarOpen && (

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import AdminLayout from '@/components/layout/AdminLayout';
+import AdminLayout from '@finanzas/components/layout/AdminLayout';
 import { UsersIcon, ArrowPathIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 export default function ClientesPage() {
@@ -39,26 +39,7 @@ export default function ClientesPage() {
     updateURL({ search: searchTerm, ...newFilters });
   };
 
-  useEffect(() => {
-    fetchSucursales();
-  }, []);
-
-  useEffect(() => {
-    // Solo cargar clientes cuando el router esté listo
-    if (router.isReady && !initialized) {
-      setInitialized(true);
-      fetchClientes();
-    }
-  }, [router.isReady, initialized]);
-
-  // Cargar clientes cuando cambien los filtros (después de inicializar)
-  useEffect(() => {
-    if (initialized) {
-      fetchClientes();
-    }
-  }, [filters.sucursal, filters.tipo]);
-
-  const fetchSucursales = async () => {
+  const fetchSucursales = useCallback(async () => {
     try {
       const response = await fetch('/api/sucursales');
       
@@ -77,40 +58,13 @@ export default function ClientesPage() {
       console.error('Error:', error);
       setSucursales([]);
     }
-  };
+  }, []);
 
-  const getSucursalName = (sucursalId) => {
-    if (!sucursalId) return '-';
-    const sucursal = sucursales.find(s => s.id === sucursalId);
-    return sucursal ? sucursal.name : sucursalId;
-  };
-
-  // Obtener nombres de múltiples sucursales
-  const getSucursalesNames = (sucursalesArray) => {
-    if (!Array.isArray(sucursalesArray) || sucursalesArray.length === 0) return '-';
-    return sucursalesArray.map(id => getSucursalName(id)).join(', ');
-  };
-
-  // Filtrar clientes por búsqueda
-  const filteredClientes = clientes.filter(cliente => {
-    if (!searchTerm) return true;
-    
-    const search = searchTerm.toLowerCase();
-    const nombreCompleto = `${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}`.toLowerCase();
-    const email = (cliente.email || '').toLowerCase();
-    const telefono = (cliente.telefono || '').toLowerCase();
-    const sucursalesNames = getSucursalesNames(cliente.sucursales).toLowerCase();
-    
-    return nombreCompleto.includes(search) || 
-           email.includes(search) || 
-           telefono.includes(search) ||
-           sucursalesNames.includes(search);
-  });
-
-  const fetchClientes = async () => {
+  const fetchClientes = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
+      params.append('pageSize', '1000');
       
       if (filters.sucursal) params.append('sucursal', filters.sucursal);
       if (filters.tipo) params.append('tipo', filters.tipo);
@@ -135,7 +89,45 @@ export default function ClientesPage() {
     } finally {
       setLoading(false);
     }
+  }, [filters.sucursal, filters.tipo]);
+
+  useEffect(() => {
+    fetchSucursales();
+  }, [fetchSucursales]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      fetchClientes();
+    }
+  }, [router.isReady, fetchClientes]);
+
+  const getSucursalName = (sucursalId) => {
+    if (!sucursalId) return '-';
+    const sucursal = sucursales.find(s => s.id === sucursalId);
+    return sucursal ? sucursal.name : sucursalId;
   };
+
+  // Obtener nombres de múltiples sucursales
+  const getSucursalesNames = (sucursalesArray) => {
+    if (!Array.isArray(sucursalesArray) || sucursalesArray.length === 0) return '-';
+    return sucursalesArray.map(id => getSucursalName(id)).join(', ');
+  };
+
+  // Filtrar clientes por búsqueda
+  const filteredClientes = clientes.filter(cliente => {
+    if (!searchTerm) return true;
+    
+    const search = searchTerm.toLowerCase();
+    const nombreCompleto = [cliente.nombre, cliente.apellidoPaterno, cliente.apellidoMaterno].filter(Boolean).join(' ').toLowerCase();
+    const email = (cliente.email || '').toLowerCase();
+    const telefono = (cliente.telefono || '').toLowerCase();
+    const sucursalesNames = getSucursalesNames(cliente.sucursales).toLowerCase();
+    
+    return nombreCompleto.includes(search) || 
+           email.includes(search) || 
+           telefono.includes(search) ||
+           sucursalesNames.includes(search);
+  });
 
   const handleSync = async () => {
     if (syncing) return;
@@ -303,7 +295,7 @@ export default function ClientesPage() {
                     <tr key={cliente.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
-                          {cliente.nombre} {cliente.apellidoPaterno} {cliente.apellidoMaterno}
+                          {[cliente.nombre, cliente.apellidoPaterno, cliente.apellidoMaterno].filter(Boolean).join(' ') || 'Sin nombre'}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

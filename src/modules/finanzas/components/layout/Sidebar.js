@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import useSidebarStore from "../../lib/stores/sidebarStore";
+import useSidebarStore from "@finanzas/stores/sidebarStore";
 import {
   HomeIcon,
   DocumentTextIcon,
@@ -19,7 +19,10 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
   ArrowTopRightOnSquareIcon,
+  BuildingOffice2Icon,
+  MapPinIcon,
 } from "@heroicons/react/24/outline";
+import useSucursalStore, { GLOBAL_SUCURSAL_ID } from "@finanzas/stores/sucursalStore";
 
 const Sidebar = ({
   isOpen,
@@ -35,6 +38,13 @@ const Sidebar = ({
   
   // Usar el store de Zustand para el estado de los menús
   const { expandedSections, toggleSection, autoExpandFromPath } = useSidebarStore();
+  
+  // Usar el store de sucursales
+  const { selectedSucursal, setSelectedSucursal, sucursales, loadSucursales } = useSucursalStore();
+
+  useEffect(() => {
+    loadSucursales();
+  }, [loadSucursales]);
 
   const handleSectionClick = (section, fallbackUrl = null) => {
     // Si la sección está colapsada, la expandimos
@@ -96,6 +106,52 @@ const Sidebar = ({
                 className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold tracking-wider text-stone-700 hover:text-stone-950 bg-stone-100 hover:bg-stone-200 border border-stone-300 rounded-lg transition-all"
               >
                 <span>← Panel Deportivo</span>
+              </button>
+            </div>
+          )}
+
+          {/* Selector de Sucursal Activa */}
+          {!collapsed ? (
+            <div className="px-3 pt-2 pb-1 border-b border-gray-100 bg-slate-50/50">
+              <div className="bg-white border border-gray-200/80 rounded-xl p-2.5 shadow-sm">
+                <div className="flex items-center justify-between mb-1.5 px-0.5">
+                  <span className="text-[10px] font-bold tracking-wider text-gray-500 uppercase flex items-center gap-1">
+                    <MapPinIcon className="h-3.5 w-3.5 text-primary" />
+                    Sucursal Activa
+                  </span>
+                  {selectedSucursal !== GLOBAL_SUCURSAL_ID && (
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700">
+                      Filtrada
+                    </span>
+                  )}
+                </div>
+                <select
+                  value={selectedSucursal}
+                  onChange={(e) => setSelectedSucursal(e.target.value)}
+                  className="w-full bg-slate-50 border border-gray-200 text-gray-800 text-xs rounded-lg py-1.5 px-2 font-medium focus:ring-2 focus:ring-primary focus:border-primary transition-all cursor-pointer hover:bg-white"
+                >
+                  <option value={GLOBAL_SUCURSAL_ID}>🌐 Global (Todas las sedes)</option>
+                  {sucursales.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      🏢 {s.name || s.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          ) : (
+            <div className="px-2 pt-3 pb-2 flex justify-center border-b border-gray-100">
+              <button
+                type="button"
+                title={`Sucursal: ${selectedSucursal === GLOBAL_SUCURSAL_ID ? 'Global (Todas las sedes)' : (sucursales.find(s => s.id === selectedSucursal)?.name || 'Sede')}`}
+                className={`p-2 rounded-lg transition-colors ${
+                  selectedSucursal === GLOBAL_SUCURSAL_ID 
+                    ? 'text-gray-400 hover:bg-gray-100 hover:text-gray-700' 
+                    : 'bg-emerald-50 text-emerald-700 font-semibold'
+                }`}
+                onClick={() => onToggleCollapse && onToggleCollapse()}
+              >
+                <BuildingOffice2Icon className="h-5 w-5" />
               </button>
             </div>
           )}
@@ -334,7 +390,7 @@ const Sidebar = ({
                 {/* Submenú de Integración */}
                 {expandedSections.integracion && (
                   <div className="space-y-1 transition-all duration-300 ease-in-out">
-                    {/* Miembros */}
+                    {/* Clientes */}
                     <button
                       onClick={() =>
                         handleNavigation("/finanzas/integracion/clientes")
@@ -346,7 +402,7 @@ const Sidebar = ({
                       }`}
                     >
                       <UsersIcon className="h-5 w-5 flex-shrink-0" />
-                      <span className="ml-3">Miembros</span>
+                      <span className="ml-3">Clientes</span>
                     </button>
 
                     {/* Sucursales */}
@@ -532,6 +588,33 @@ const Sidebar = ({
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
+          </div>
+
+          {/* Selector de Sucursal Activa Móvil */}
+          <div className="px-4 py-3 bg-slate-50 border-b border-gray-200">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs font-bold tracking-wider text-gray-500 uppercase flex items-center gap-1.5">
+                <MapPinIcon className="h-4 w-4 text-primary" />
+                Sucursal Activa
+              </span>
+              {selectedSucursal !== GLOBAL_SUCURSAL_ID && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700">
+                  Filtrada
+                </span>
+              )}
+            </div>
+            <select
+              value={selectedSucursal}
+              onChange={(e) => setSelectedSucursal(e.target.value)}
+              className="w-full bg-white border border-gray-300 text-gray-800 text-sm rounded-lg py-2 px-3 font-medium focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+              <option value={GLOBAL_SUCURSAL_ID}>🌐 Global (Todas las sedes)</option>
+              {sucursales.map((s) => (
+                <option key={s.id} value={s.id}>
+                  🏢 {s.name || s.nombre}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Mobile Navigation */}
@@ -787,6 +870,65 @@ const Sidebar = ({
               <ArrowTopRightOnSquareIcon className="h-5 w-5 flex-shrink-0" />
               <span className="ml-3">Portal ELISEOS</span>
             </a>
+
+            {/* Integración Section (mobile) */}
+            {checkPermission("canManageSettings") && (
+              <div className="space-y-1">
+                <button
+                  onClick={() => handleSectionClick('integracion')}
+                  className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <div className="flex items-center">
+                    <svg className="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                    <span className="ml-3">Integración</span>
+                  </div>
+                  {expandedSections.integracion ? (
+                    <ChevronDownIcon className="h-4 w-4" />
+                  ) : (
+                    <ChevronRightIcon className="h-4 w-4" />
+                  )}
+                </button>
+
+                {/* Submenú de Integración */}
+                {expandedSections.integracion && (
+                  <div className="space-y-1">
+                    {/* Clientes */}
+                    <button
+                      onClick={() =>
+                        handleNavigation("/finanzas/integracion/clientes")
+                      }
+                      className={`w-full flex items-center px-3 py-2 pl-10 text-sm font-medium rounded-lg transition-colors ${
+                        router.pathname === "/finanzas/integracion/clientes"
+                          ? "bg-[#f4f8f8] text-primary font-bold border-l-2 border-[#c2ef03]"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      <UsersIcon className="h-5 w-5 flex-shrink-0" />
+                      <span className="ml-3">Clientes</span>
+                    </button>
+
+                    {/* Sucursales */}
+                    <button
+                      onClick={() =>
+                        handleNavigation("/finanzas/integracion/sucursales")
+                      }
+                      className={`w-full flex items-center px-3 py-2 pl-10 text-sm font-medium rounded-lg transition-colors ${
+                        router.pathname === "/finanzas/integracion/sucursales"
+                          ? "bg-[#f4f8f8] text-primary font-bold border-l-2 border-[#c2ef03]"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      <svg className="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                      <span className="ml-3">Sucursales</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Configuración Section (mobile) - Solo Admin */}
             {checkPermission("canManageSettings") && (

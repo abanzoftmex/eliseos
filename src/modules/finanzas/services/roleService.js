@@ -214,6 +214,8 @@ export const canAccessRoute = (userRole, routePath) => {
     "/finanzas/analisis-ia": "canViewAnalisisIA",
     "/finanzas/configuracion": "canManageSettings",
     "/finanzas/configuracion/correos-notificacion": "canManageSettings",
+    "/finanzas/integracion/clientes": "canManageSettings",
+    "/finanzas/integracion/sucursales": "canManageSettings",
     "/finanzas/usuarios": "canManageUsers",
   };
 

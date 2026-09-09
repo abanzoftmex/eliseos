@@ -654,52 +654,126 @@ function PasaporteContent() {
 
       {/* ── TAB 3: MI TRANSFORMACIÓN ── */}
       {activeTab === 'transformacion' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
-          
-          {/* Así empecé */}
-          <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm space-y-6 text-center">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-500 block">Punto de Partida</span>
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Así Empecé el Año</h3>
-            
-            <div className="w-full aspect-[4/5] max-w-xs mx-auto rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center relative">
-              {passport.fotoInicioUrl ? (
-                <img src={passport.fotoInicioUrl} alt="Así Empecé" className="w-full h-full object-cover" />
-              ) : (
-                <div className="p-6 text-slate-400 space-y-2">
-                  <Camera size={36} className="mx-auto text-slate-300 dark:text-slate-600" />
-                  <p className="text-xs font-bold">Foto Inicial</p>
-                  <p className="text-[10px] text-slate-400 leading-tight">Pídele al coach que tome tu foto al inicio del reto.</p>
-                </div>
-              )}
+        <div className="space-y-8 animate-fade-in">
+          {/* Postura Inicial: Frente, Lado, Espalda */}
+          <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm space-y-6">
+            <div className="text-center space-y-1">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-500 block">Punto de Partida</span>
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Fotos de Postura Inicial</h3>
+              <p className="text-xs text-slate-400 font-medium">Registro fotográfico inicial en 3 ángulos</p>
             </div>
 
-            <div className="text-xs font-bold text-slate-500">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {/* Frente */}
+              <div className="space-y-2 text-center">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">1. De Frente</span>
+                <div className="w-full aspect-[4/5] rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center relative">
+                  {(passport.fotosPostura?.frenteUrl || passport.fotoInicioUrl) ? (
+                    <img src={passport.fotosPostura?.frenteUrl || passport.fotoInicioUrl} alt="Frente" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="p-4 text-slate-400 space-y-2">
+                      <Camera size={32} className="mx-auto text-slate-300 dark:text-slate-600" />
+                      <p className="text-[11px] font-bold">Sin foto frontal</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Lado */}
+              <div className="space-y-2 text-center">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">2. De Lado / Perfil</span>
+                <div className="w-full aspect-[4/5] rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center relative">
+                  {passport.fotosPostura?.ladoUrl ? (
+                    <img src={passport.fotosPostura.ladoUrl} alt="Lado" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="p-4 text-slate-400 space-y-2">
+                      <Camera size={32} className="mx-auto text-slate-300 dark:text-slate-600" />
+                      <p className="text-[11px] font-bold">Sin foto de lado</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Espalda */}
+              <div className="space-y-2 text-center">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">3. De Espalda</span>
+                <div className="w-full aspect-[4/5] rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center relative">
+                  {passport.fotosPostura?.espaldaUrl ? (
+                    <img src={passport.fotosPostura.espaldaUrl} alt="Espalda" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="p-4 text-slate-400 space-y-2">
+                      <Camera size={32} className="mx-auto text-slate-300 dark:text-slate-600" />
+                      <p className="text-[11px] font-bold">Sin foto de espalda</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center text-xs font-bold text-slate-500">
               Iniciado el: <span className="text-slate-900 dark:text-white font-black">{passport.fechaInicio || 'Enero 2026'}</span>
             </div>
           </div>
 
-          {/* Así terminé */}
-          <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm space-y-6 text-center">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-500 block">Resultado Construido</span>
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Así Terminé el Año</h3>
+          {/* Así terminé - 3 ángulos */}
+          <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm space-y-6">
+            <div className="text-center space-y-1">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-500 block">Resultado Construido</span>
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Así Terminé el Año</h3>
+              <p className="text-xs text-slate-400">Postura final en 3 ángulos (frente, lado y espalda)</p>
+            </div>
             
-            <div className="w-full aspect-[4/5] max-w-xs mx-auto rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center relative">
-              {passport.fotoFinUrl ? (
-                <img src={passport.fotoFinUrl} alt="Así Terminé" className="w-full h-full object-cover" />
-              ) : (
-                <div className="p-6 text-slate-400 space-y-2">
-                  <Trophy size={36} className="mx-auto text-slate-300 dark:text-slate-600" />
-                  <p className="text-xs font-bold">Foto de Cierre</p>
-                  <p className="text-[10px] text-slate-400 leading-tight">Disponible al completar el ciclo anual en Diciembre.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              {/* Frente */}
+              <div className="space-y-2 text-center">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">1. De Frente</span>
+                <div className="w-full aspect-[4/5] rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-amber-500/30 dark:border-amber-500/20 overflow-hidden flex items-center justify-center relative">
+                  {(passport.fotosCierre?.frenteUrl || passport.fotoFinUrl) ? (
+                    <img src={passport.fotosCierre?.frenteUrl || passport.fotoFinUrl} alt="Cierre Frente" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="p-4 text-slate-400 space-y-2">
+                      <Trophy size={32} className="mx-auto text-amber-400/60 dark:text-amber-500/40" />
+                      <p className="text-[11px] font-bold">Sin foto frontal</p>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+
+              {/* Lado */}
+              <div className="space-y-2 text-center">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">2. De Lado / Perfil</span>
+                <div className="w-full aspect-[4/5] rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-amber-500/30 dark:border-amber-500/20 overflow-hidden flex items-center justify-center relative">
+                  {passport.fotosCierre?.ladoUrl ? (
+                    <img src={passport.fotosCierre.ladoUrl} alt="Cierre Lado" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="p-4 text-slate-400 space-y-2">
+                      <Trophy size={32} className="mx-auto text-amber-400/60 dark:text-amber-500/40" />
+                      <p className="text-[11px] font-bold">Sin foto de lado</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Espalda */}
+              <div className="space-y-2 text-center">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">3. De Espalda</span>
+                <div className="w-full aspect-[4/5] rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-amber-500/30 dark:border-amber-500/20 overflow-hidden flex items-center justify-center relative">
+                  {passport.fotosCierre?.espaldaUrl ? (
+                    <img src={passport.fotosCierre.espaldaUrl} alt="Cierre Espalda" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="p-4 text-slate-400 space-y-2">
+                      <Trophy size={32} className="mx-auto text-amber-400/60 dark:text-amber-500/40" />
+                      <p className="text-[11px] font-bold">Sin foto de espalda</p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
-            <div className="text-xs font-bold text-slate-500">
+            <div className="text-center text-xs font-bold text-slate-500">
               Finalizado el: <span className="text-slate-900 dark:text-white font-black">{passport.fechaFin || 'Diciembre 2026'}</span>
             </div>
           </div>
-
         </div>
       )}
 

@@ -17,9 +17,10 @@ export const dashboardService = {
   },
 
   // Get summary for a specific date range
-  async getMonthSummary(startDate, endDate) {
+  async getMonthSummary(startDate, endDate, sucursalId = null) {
     try {
-      const transactions = await transactionService.getByDateRange(startDate, endDate);
+      const filters = sucursalId && sucursalId !== 'global' ? { sucursalId } : {};
+      const transactions = await transactionService.getByDateRange(startDate, endDate, filters);
       
       const summary = {
         entradas: 0,
@@ -50,13 +51,13 @@ export const dashboardService = {
   },
 
   // Get transactions by concept for current month
-  async getTransactionsByConcept() {
+  async getTransactionsByConcept(sucursalId = null) {
     try {
       const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
-      return this.getTransactionsByConceptForDateRange(startOfMonth, endOfMonth);
+      return this.getTransactionsByConceptForDateRange(startOfMonth, endOfMonth, sucursalId);
     } catch (error) {
       console.error('Error getting transactions by concept:', error);
       throw new Error('Error al obtener transacciones por concepto');
@@ -64,9 +65,10 @@ export const dashboardService = {
   },
 
   // Get transactions by concept for a specific date range
-  async getTransactionsByConceptForDateRange(startDate, endDate) {
+  async getTransactionsByConceptForDateRange(startDate, endDate, sucursalId = null) {
     try {
-      const transactions = await transactionService.getByDateRange(startDate, endDate);
+      const filters = sucursalId && sucursalId !== 'global' ? { sucursalId } : {};
+      const transactions = await transactionService.getByDateRange(startDate, endDate, filters);
       const concepts = await conceptService.getAll();
       
       // Create a map of concept names
@@ -108,10 +110,11 @@ export const dashboardService = {
   },
 
   // Get monthly trends for the last 6 months
-  async getMonthlyTrends() {
+  async getMonthlyTrends(sucursalId = null) {
     try {
       const trends = [];
       const now = new Date();
+      const filters = sucursalId && sucursalId !== 'global' ? { sucursalId } : {};
       
       // Get data for the last 6 months
       for (let i = 5; i >= 0; i--) {
@@ -119,7 +122,7 @@ export const dashboardService = {
         const startOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
         const endOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0, 23, 59, 59);
         
-        const transactions = await transactionService.getByDateRange(startOfMonth, endOfMonth);
+        const transactions = await transactionService.getByDateRange(startOfMonth, endOfMonth, filters);
         
         const monthData = {
           month: monthDate.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' }),

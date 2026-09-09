@@ -439,6 +439,35 @@ export default function PuntoDeVentaPage() {
             const ventaResult = await createVenta(saleData);
             console.log('✅ Venta guardada en Firebase:', ventaResult);
 
+            // Si hay cliente seleccionado, registrar cargo pagado en su perfil
+            if (selectedClient?.id) {
+                try {
+                    const userType = selectedClient.esAtleta || selectedClient.deporte ? 'atleta' : 'cliente';
+                    const descripcion = cart.map(item => `${item.name} x${item.quantity}`).join(', ');
+                    await createCargo(selectedClient.id, userType, {
+                        tipo: 'venta_pos',
+                        descripcion,
+                        items: cart.map(item => ({
+                            productoId: item.id,
+                            nombre: item.name,
+                            cantidad: item.quantity,
+                            precioUnitario: item.price,
+                            subtotal: item.price * item.quantity,
+                        })),
+                        monto: total,
+                        isPaid: true,
+                        estatus: 'pagado',
+                        totalReportado: total,
+                        totalValidado: total,
+                        metodoPago: saleData.metodoPago || 'efectivo',
+                        ventaId: ventaResult.ventaId || null,
+                        sucursalId: selectedSucursal,
+                    });
+                } catch (cargoErr) {
+                    console.warn('Error registrando cargo de venta para cliente:', cargoErr);
+                }
+            }
+
             // Crear ingreso en Science Chago
             console.log('🔄 Iniciando sincronización con Science Chago...');
             try {

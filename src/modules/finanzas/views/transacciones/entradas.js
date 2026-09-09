@@ -11,6 +11,7 @@ import { transactionService } from "@finanzas/lib/services/transactionService";
 import { conceptService } from "@finanzas/lib/services/conceptService";
 import { clienteService } from "@finanzas/lib/services/clienteService";
 import { sucursalService } from "@finanzas/lib/services/sucursalService";
+import useSucursalStore, { GLOBAL_SUCURSAL_ID } from "@finanzas/stores/sucursalStore";
 import { 
   PlusIcon,
   ArrowTrendingUpIcon,
@@ -40,6 +41,16 @@ const Ingresos = () => {
   });
   const [initialized, setInitialized] = useState(false);
   const toast = useToast();
+  const { selectedSucursal, getSelectedSucursalData } = useSucursalStore();
+
+  // Sincronizar sucursal seleccionada del store con los filtros locales
+  useEffect(() => {
+    if (selectedSucursal !== GLOBAL_SUCURSAL_ID) {
+      setFilters(prev => ({ ...prev, sucursalId: selectedSucursal }));
+    } else {
+      setFilters(prev => ({ ...prev, sucursalId: "" }));
+    }
+  }, [selectedSucursal]);
 
   // Check permissions based on user role
   const canManageTransactions = checkPermission("canManageTransactions");
@@ -290,10 +301,15 @@ const Ingresos = () => {
                   <ArrowTrendingUpIcon className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 flex-wrap gap-y-1">
                     <h1 className="text-2xl font-bold text-gray-900">
                       Ingresos - {currentMonthName}
                     </h1>
+                    {selectedSucursal !== GLOBAL_SUCURSAL_ID && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-600 text-white shadow-sm">
+                        🏢 {getSelectedSucursalData().name}
+                      </span>
+                    )}
                     <AdvancedDateSelector
                       currentDate={currentDate}
                       onDateChange={handleDateChange}
@@ -302,7 +318,9 @@ const Ingresos = () => {
                     />
                   </div>
                   <p className="text-gray-600 mt-1">
-                    Registra y consulta los ingresos de la organización
+                    {selectedSucursal !== GLOBAL_SUCURSAL_ID
+                      ? `Ingresos de la sede ${getSelectedSucursalData().name}`
+                      : "Registra y consulta los ingresos de la organización (global)"}
                   </p>
                 </div>
               </div>

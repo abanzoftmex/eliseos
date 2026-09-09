@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import AdminLayout from '@/components/layout/AdminLayout';
+import AdminLayout from '@finanzas/components/layout/AdminLayout';
 import { BuildingOfficeIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 export default function SucursalesPage() {

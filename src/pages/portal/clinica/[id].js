@@ -192,19 +192,19 @@ function ClinicaDetalleContent() {
             {tipo === 'rapida' && <ConsultaRapidaView record={record} />}
 
             {tipo === 'deportiva' && (
-              <div className="bg-white rounded-[2.5rem] border border-science-100 shadow-sm p-10">
+              <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] border border-science-100 shadow-sm p-4 sm:p-6 lg:p-10 overflow-x-auto">
                 <FichaDeportivaForm formData={record.answers || {}} readOnly={true} />
               </div>
             )}
 
             {tipo === 'medica' && (
-              <div className="bg-white rounded-[2.5rem] border border-science-100 shadow-sm p-10">
+              <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] border border-science-100 shadow-sm p-4 sm:p-6 lg:p-10 overflow-x-auto">
                 <FichaMedicaForm formData={record.answers || {}} readOnly={true} />
               </div>
             )}
 
             {tipo !== 'rapida' && tipo !== 'deportiva' && tipo !== 'medica' && (
-              <div className="bg-white rounded-[2.5rem] border border-science-100 shadow-sm p-10">
+              <div className="bg-white rounded-[1.5rem] sm:rounded-[2.5rem] border border-science-100 shadow-sm p-4 sm:p-6 lg:p-10 overflow-x-auto">
                 <ConsultaReadView consulta={record} hideHeader />
               </div>
             )}
