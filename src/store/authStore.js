@@ -13,17 +13,17 @@ const useAuthStore = create(
       isAuthenticated: false,
       loading: false,
       hasHydrated: false,
-      permissionsVersion: 5, // Incrementar esto cuando cambien los permisos
+      permissionsVersion: 6, // Incrementar esto cuando cambien los permisos
 
       // Configuración de permisos por rol
       rolePermissions: {
-        admin: ['dashboard', 'directorio', 'clientes', 'paquetes', 'productos', 'clases', 'asignar-paquetes', 'configuracion', 'calendario', 'sucursales', 'finanzas'],
-        coach: ['dashboard', 'directorio', 'clientes', 'productos', 'clases', 'asignar-paquetes', 'calendario'],
-        staff: ['dashboard', 'directorio', 'clientes', 'productos', 'clases', 'asignar-paquetes', 'calendario'],
-        medico: ['dashboard', 'directorio', 'clientes', 'productos', 'clases', 'asignar-paquetes', 'calendario'],
-        personal: ['dashboard', 'clientes', 'productos', 'clases', 'calendario'],
-        asistente: ['dashboard', 'clientes', 'productos', 'clases', 'calendario'],
-        invitado: ['dashboard'],
+        admin: ['dashboard', 'directorio', 'clientes', 'paquetes', 'productos', 'clases', 'asignar-paquetes', 'configuracion', 'calendario', 'sucursales', 'finanzas', 'perfil'],
+        coach: ['dashboard', 'directorio', 'clientes', 'productos', 'clases', 'asignar-paquetes', 'calendario', 'perfil'],
+        staff: ['dashboard', 'directorio', 'clientes', 'productos', 'clases', 'asignar-paquetes', 'calendario', 'perfil'],
+        medico: ['dashboard', 'directorio', 'clientes', 'productos', 'clases', 'asignar-paquetes', 'calendario', 'perfil'],
+        personal: ['dashboard', 'clientes', 'productos', 'clases', 'calendario', 'perfil'],
+        asistente: ['dashboard', 'clientes', 'productos', 'clases', 'calendario', 'perfil'],
+        invitado: ['dashboard', 'perfil'],
       },
 
       // Establecer usuario actual

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Toaster } from 'react-hot-toast';
+import Link from 'next/link';
+import { User, ShieldCheck } from 'lucide-react';
 import Sidebar from './Sidebar';
 import Breadcrumbs from '../common/Breadcrumbs';
 import BackButton from '../common/BackButton';
@@ -58,10 +60,22 @@ const Layout = ({
                 </div>
               </div>
 
-              {/* Optional: Add user profile mini-widget or sucursal badge here */}
-              <div className="hidden md:flex items-center gap-3">
-                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
-                <span className="text-[10px] font-bold text-science-500 uppercase tracking-widest">Sistema Activo</span>
+              {/* Profile Shortcut Widget */}
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/perfil"
+                  className="flex items-center gap-2 bg-white hover:bg-science-50 text-science-900 border border-science-200 px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm transition-all hover:border-[#1c4040]/30 hover:shadow-md"
+                >
+                  <div className="w-6 h-6 rounded-lg bg-[#1c4040] text-[#c2ef03] flex items-center justify-center text-[10px] font-black">
+                    <User size={14} />
+                  </div>
+                  <span className="hidden sm:inline">Mi Perfil</span>
+                </Link>
+
+                <div className="hidden md:flex items-center gap-2 pl-2 border-l border-science-200">
+                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+                  <span className="text-[10px] font-bold text-science-500 uppercase tracking-widest">Sistema Activo</span>
+                </div>
               </div>
             </div>
           )}

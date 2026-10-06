@@ -22,6 +22,7 @@ import {
   ShoppingBag, 
   CircleDollarSign, 
   ExternalLink,
+  User,
   Users
 } from 'lucide-react';
 import useSidebarStore from '../../store/sidebarStore';
@@ -55,7 +56,7 @@ const Sidebar = () => {
   }, [setSucursales]);
 
   const pathname = router.pathname;
-  const { hasAccess, isAuthenticated, logout } = useAuthStore();
+  const { hasAccess, isAuthenticated, logout, currentUser, userRole } = useAuthStore();
 
   const allMenuItems = [
     {
@@ -65,6 +66,14 @@ const Sidebar = () => {
       href: '/dashboard',
       active: pathname === '/dashboard',
       permission: 'dashboard'
+    },
+    {
+      id: 'perfil',
+      name: 'Mi Perfil',
+      icon: User,
+      href: '/perfil',
+      active: pathname === '/perfil',
+      permission: 'perfil'
     },
     {
       id: 'directorio',
@@ -267,6 +276,24 @@ const Sidebar = () => {
           </nav>
 
           <div className="mt-auto p-4 space-y-2">
+            <Link
+              href="/perfil"
+              className={`
+                w-full flex items-center rounded-xl p-2.5 transition-all duration-200 bg-science-800/40 hover:bg-science-800 border border-science-700/50 group
+                ${isCollapsed ? 'justify-center' : 'gap-3'}
+              `}
+              title="Ir a Mi Perfil"
+            >
+              <div className="w-8 h-8 rounded-lg bg-[#1c4040] text-[#c2ef03] font-bold text-xs flex items-center justify-center border border-[#c2ef03]/30 shrink-0 shadow-sm">
+                {currentUser?.displayName ? currentUser.displayName.charAt(0).toUpperCase() : (auth.currentUser?.email ? auth.currentUser.email.charAt(0).toUpperCase() : 'U')}
+              </div>
+              {!isCollapsed && (
+                <div className="overflow-hidden flex-1 text-left">
+                  <p className="text-xs font-bold text-white truncate">{currentUser?.displayName || auth.currentUser?.displayName || 'Mi Perfil'}</p>
+                  <p className="text-[10px] text-science-400 font-medium capitalize truncate">{userRole || 'Usuario'}</p>
+                </div>
+              )}
+            </Link>
 
             <button
               onClick={handleLogout}

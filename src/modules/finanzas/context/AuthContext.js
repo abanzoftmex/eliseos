@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut, updatePassword as firebaseUpdatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { auth, db } from "../firebase/firebaseConfig";
 import {
   getUserRole,
@@ -76,6 +76,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updatePassword = async (currentPassword, newPassword) => {
+    const currentUser = auth.currentUser || user;
+    if (!currentUser) {
+      throw new Error("No hay un usuario autenticado");
+    }
+    if (currentPassword) {
+      const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+      await reauthenticateWithCredential(currentUser, credential);
+    }
+    await firebaseUpdatePassword(currentUser, newPassword);
+    return { success: true };
+  };
+
   const checkPermission = (permission) => {
     if (userRole === ROLES.ADMIN || userRole === ROLES.ADMINISTRATIVO || authStoreRole === 'admin') {
       return true;
@@ -100,6 +113,7 @@ export const AuthProvider = ({ children }) => {
     roleLoading,
     loading,
     logout,
+    updatePassword,
     checkPermission,
     getUserPermissions,
     canUserAccessRoute,
@@ -110,3 +124,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
+
